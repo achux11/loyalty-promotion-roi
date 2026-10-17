@@ -26,7 +26,23 @@ package in Excel plus a promotion post-mortem.
 5. **Payback** = incremental gross profit ÷ cost, with gross margin as an explicit assumption (`--margin`, default 30%).
 
 ## Results
-_Filled in after running on the full dataset (`python run.py`)._
+Full dataset: **2,500 loyalty households, 275,542 baskets, 2,576,882 point-of-sale line items, $8.06M in sales.**
+
+| Finding | Result |
+|---|---|
+| Campaigns with a statistically significant lift (p < 0.05) | **2 of 30** |
+| Portfolio incremental sales vs. control | **−$30K** (not distinguishable from zero) |
+| Spend per member, per 4-week period (median) | **$173.64** |
+| Member retention, period to next period (median) | **89.7%** |
+| Share of sales from the top 25% of members | **60.4%** |
+| Soft-drink attach rate in snack baskets: coupon vs. no coupon | **58.1% vs. 47.8%** (41,975 baskets) |
+| Rows flagged by data validation | **33,316** (18,850 zero/negative-sales lines excluded; 14,466 zero-quantity lines flagged) |
+
+**What this means**
+- **Most campaigns did not move spend.** Against untargeted members over the same period, only 2 of 30 campaigns showed a lift that was unlikely to be noise. Judged on redemptions alone, many would have looked successful.
+- **Spend is concentrated.** A quarter of members drive 60% of sales, so retention of that tier matters more than broad discounts.
+- **Coupon baskets attach more.** Snack baskets that used a coupon included a soft drink 10.3 points more often. This is a correlation, not proof the coupon caused it.
+- **Per-campaign ROI percentages are unstable** when coupon cost is small (some campaigns cost under $100), so lift and its p-value are the first test; ROI only matters once the lift is real.
 
 ## Outputs (`outputs/`)
 - `loyalty_promotion_report.xlsx`: 8 tabs (Summary, Campaign ROI, ROI by Campaign Type, Member KPIs, Retention, Loyalty Tiers, Attach Rate, Data Validation)
@@ -62,6 +78,7 @@ tests/                    7 tests
 ## Limitations
 - Campaign windows overlap, so a household can be in several campaigns at once; per-campaign lifts are estimates.
 - Gross margin is assumed, not observed.
+- Coupon cost counts only the discounts recorded on each campaign's coupon products, so ROI on low-cost campaigns can look extreme.
 - Targeting was not random, so the control group is "similar members who were not targeted", not a true A/B test.
 
 ---
