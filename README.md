@@ -1,5 +1,7 @@
 # Loyalty & Promotion ROI Analysis
 
+[![CI](https://github.com/achux11/loyalty-promotion-roi/actions/workflows/ci.yml/badge.svg)](https://github.com/achux11/loyalty-promotion-roi/actions/workflows/ci.yml)
+
 **Did our promotions pay for themselves, and what do loyalty members spend?** This project answers both on
 **dunnhumby's *The Complete Journey***: two years of point-of-sale transactions from ~2,500 loyalty-card
 households at a food retailer, with the marketing campaigns and coupons they received.
