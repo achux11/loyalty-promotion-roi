@@ -51,6 +51,9 @@ def main() -> dict:
         ("Incremental sales", round(s["incremental_sales"], 2)),
         ("Coupon cost", round(s["coupon_cost"], 2)),
         ("Portfolio payback (gross profit per $1 coupon cost)", round(s["portfolio_payback"], 2)),
+        ("Coupon cost funded by brand partners (manufacturers)", round(s["brand_partner_share_of_coupon_cost"], 4)),
+        ("Coupon cost funded by the retailer", round(s["retailer_cost_net_of_partners"], 2)),
+        ("Median redemption (conversion) rate of targeted members", round(roi["redemption_rate"].median(), 4)),
         ("Assumed gross margin", args.margin),
         ("Rows flagged by validation", int(checks["rows_flagged"].sum())),
     ]

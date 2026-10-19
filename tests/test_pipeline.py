@@ -37,6 +37,7 @@ def test_campaigns_recover_planted_lift(d, t):
     assert (roi["lift_pct"] > 0.05).all()          # planted lift is +25% visit rate
     assert (roi["p_value"] < 0.05).sum() >= 2      # the shortest campaign has the least data
     assert (roi["coupon_cost"] > 0).all() and (roi["incremental_sales"] > 0).all()
+    assert (roi["brand_partner_funded"] + roi["retailer_funded"] - roi["coupon_cost"]).abs().max() < 1e-6
 
 
 def test_no_lift_means_no_significant_effect():

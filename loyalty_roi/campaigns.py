@@ -41,7 +41,9 @@ def evaluate(t: pd.DataFrame, d: dict[str, pd.DataFrame], margin: float = 0.30) 
         window = t[(t["day"] >= c.start_day) & (t["day"] <= c.end_day)]
         prods = set(d["coupons"].loc[d["coupons"]["campaign"] == c.campaign, "product_id"])
         mask = window["household_key"].isin(targeted) & window["product_id"].isin(prods)
-        cost = float(-(window.loc[mask, "coupon_disc"] + window.loc[mask, "coupon_match_disc"]).sum())
+        brand_funded = float(-window.loc[mask, "coupon_disc"].sum())          # manufacturer (brand partner) coupons
+        retailer_match = float(-window.loc[mask, "coupon_match_disc"].sum())  # retailer's matching discount
+        cost = brand_funded + retailer_match
         red = d["redemptions"][d["redemptions"]["campaign"] == c.campaign]
         incr_gp = incr_sales * margin
         rows.append({
@@ -50,6 +52,7 @@ def evaluate(t: pd.DataFrame, d: dict[str, pd.DataFrame], margin: float = 0.30) 
             "pre_spend_per_day_targeted": pre[is_t].mean(), "during_spend_per_day_targeted": dur[is_t].mean(),
             "lift_per_member_day": did, "lift_pct": did / pre[is_t].mean() if pre[is_t].mean() else np.nan,
             "p_value": p_value, "incremental_sales": incr_sales, "coupon_cost": cost,
+            "brand_partner_funded": brand_funded, "retailer_funded": retailer_match,
             "incremental_gross_profit": incr_gp,
             "payback_ratio": incr_gp / cost if cost > 0 else np.nan,
             "roi": (incr_gp - cost) / cost if cost > 0 else np.nan,
@@ -70,6 +73,8 @@ def summary(roi: pd.DataFrame) -> dict:
         "coupon_cost": float(cost),
         "incremental_gross_profit": float(gp),
         "portfolio_payback": float(gp / cost) if cost > 0 else float("nan"),
+        "brand_partner_share_of_coupon_cost": float(roi["brand_partner_funded"].sum() / cost) if cost > 0 else float("nan"),
+        "retailer_cost_net_of_partners": float(roi["retailer_funded"].sum()),
         "by_type": roi.groupby("type").agg(campaigns=("roi", "size"), median_lift_pct=("lift_pct", "median"),
                                            median_roi=("roi", "median"),
                                            redemption_rate=("redemption_rate", "median")).round(3),
